@@ -15,7 +15,7 @@ public class HelpPane {
     public void show() {
         JPanel helpPanel = new JPanel();
         helpPanel.setLayout(new BorderLayout());
-        String trentFile = "/META-INF/help/trend.html";
+        String trentFile = "/help/trend.html";
         String buffer = readHelpFile(trentFile);
         URL imgUrl = getClass().getClassLoader().getResource("image/trend3.jpg");
         String htmlString = "<center><img src=\"" +imgUrl.toString()+"\" /></center>";
@@ -36,7 +36,7 @@ public class HelpPane {
         btn0.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String str = readHelpFile("/META-INF/help/trend.html");
+                String str = readHelpFile("/help/trend.html");
                 URL imgUrl = getClass().getClassLoader().getResource("image/trend3.jpg");
                 String htmlString = "<img src=\"" +imgUrl.toString()+"\" />";
                 str = htmlString + str;
@@ -50,7 +50,7 @@ public class HelpPane {
         btn1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String str = readHelpFile("/META-INF/help/trend_kind.html");
+                String str = readHelpFile("/help/trend_kind.html");
                 textPane.setText(str);
                 textPane.setCaretPosition(0);
                 textPane.repaint();
@@ -61,7 +61,7 @@ public class HelpPane {
         btn2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String str = readHelpFile("/META-INF/help/methods.html");
+                String str = readHelpFile("/help/methods.html");
                 textPane.setText(str);
                 textPane.setCaretPosition(0);
                 textPane.repaint();
@@ -72,7 +72,7 @@ public class HelpPane {
         btn3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String str = readHelpFile("/META-INF/help/trend_line.html");
+                String str = readHelpFile("/help/trend_line.html");
                 textPane.setText(str);
                 textPane.setCaretPosition(0);
                 textPane.repaint();
@@ -83,7 +83,7 @@ public class HelpPane {
         btn4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String str = readHelpFile("/META-INF/help/trend_type.html");
+                String str = readHelpFile("/help/trend_type.html");
                 textPane.setText(str);
                 textPane.setCaretPosition(0);
                 textPane.repaint();

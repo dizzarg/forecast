@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+mainClassName = 'forecast.Application'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.2'
+    compile group: 'org.jfree', name: 'jfreechart', version: '1.0.15'
+}
+
+jar {
+    baseName = 'forecast'
+    version =  '0.1.0'
+}

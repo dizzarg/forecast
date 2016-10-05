@@ -1,8 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
 
 mainClassName = 'forecast.Application'
 
@@ -17,5 +17,5 @@ dependencies {
 
 jar {
     baseName = 'forecast'
-    version =  '0.1.0'
+    version =  '0.1'
 }

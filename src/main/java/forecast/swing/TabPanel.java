@@ -4,7 +4,10 @@ import forecast.trend.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.time.*;
+import org.jfree.data.time.RegularTimePeriod;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.TimeSeriesDataItem;
 import org.jfree.ui.ExtensionFileFilter;
 
 import javax.swing.*;
@@ -13,7 +16,10 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import static forecast.utils.TimeSeriesReader.loadTimeSeriesFromFile;
@@ -23,21 +29,18 @@ public class TabPanel extends JPanel{
     private String title =null;
     private ChartPanel chartPanel = null;
     private JPanel infoPane = new JPanel();
-    private JPanel settingPane = new JPanel();
     private JCheckBox showCenterMoveLineSeries = new JCheckBox("Отобразить центрировую скользящую средную:", false);
     private JSpinner periodSpinner = new JSpinner();
-//    private String[] trends = {"Линейный", "Параболический",
-//            "Логарифмическая", "Степенная", "Экспоненциальная", "Полином 3 степени"};
-private String[] trends = {"Линейный", "Параболический",
+    private String[] trends = {"Линейный", "Параболический",
         "Логарифмическая", "Степенная", "Экспоненциальная"};
     private JComboBox trendBox = new JComboBox(trends);
     private JRadioButton addTypeBth = new JRadioButton("Аддетивная", true);
     private JRadioButton multiTypeBth = new JRadioButton("Мультипликативная", false);
-    TimeSeriesCollection collection = new TimeSeriesCollection();
+    private TimeSeriesCollection collection = new TimeSeriesCollection();
     private TimeSeries fileSeries = new TimeSeries("Данные с файла");
     private double R2;
     private TimeSeries sma;
-    private TimeSeries prognoz;
+    private TimeSeries forecast;
     private TimeSeries error;
     private double ysr;
 
@@ -51,10 +54,10 @@ private String[] trends = {"Линейный", "Параболический",
             }
         });
 
+        JPanel settingPane = new JPanel();
         settingPane.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
-//        addCenterComponents(showCenterMoveLineSeries, settingPane, gbc);
         periodSpinner.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -103,45 +106,6 @@ private String[] trends = {"Линейный", "Параболический",
         add(chartPanel, BorderLayout.CENTER);
     }
 
-    public void showInformationPane() {
-        settingPane.setVisible(!settingPane.isVisible());
-    }
-
-    public void loadFromFile(File file) {
-        try {
-            JFreeChart chart = createChart();
-            updateChart(chart);
-            add(chartPanel, BorderLayout.CENTER);
-            this.title = file.getName();
-        } catch (Exception e) {
-            new ExceptionPane().show("Ошибка при отрисовке графика с файла", e);
-        }
-    }
-
-    public boolean loadFromFile() {
-        boolean flag = false;
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileFilter(new ExtensionFileFilter("Текстовый файл", "txt"));
-        fileChooser.showOpenDialog(this);
-        File file = fileChooser.getSelectedFile();
-        if(file!=null){
-            try {
-                String timeFormat="";
-                String separator=";";
-                loadTimeSeriesFromFile(fileSeries, timeFormat, file, separator);
-                JFreeChart chart = createChart();
-                updateChart(chart);
-                add(chartPanel, BorderLayout.CENTER);
-                this.title = file.getName();
-                flag = true;
-            } catch (Exception e) {
-                new ExceptionPane().show("Ошибка при отрисовке графика с файла", e);
-            }
-
-        }
-        return flag;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -159,58 +123,18 @@ private String[] trends = {"Линейный", "Параболический",
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
                 SimpleDateFormat format = new SimpleDateFormat("yyyy MM dd");
                 if(!sma.isEmpty()){
-                    writer.write(sma.getKey().toString());
-                    writer.newLine();
-                    for (Object o: sma.getItems()){
-                        TimeSeriesDataItem item = (TimeSeriesDataItem) o;
-                        StringBuilder builder = new StringBuilder();
-                        builder.append(format.format(item.getPeriod().getStart()));
-                        builder.append(";");
-                        builder.append(item.getValue());
-                        writer.write(builder.toString());
-                        writer.newLine();
-                    }
+                    writeSMA(writer, format);
                 }
                 if(!sma.isEmpty()){
-                    writer.write(sma.getKey().toString());
-                    writer.newLine();
-                    for (Object o: sma.getItems()){
-                        TimeSeriesDataItem item = (TimeSeriesDataItem) o;
-                        StringBuilder builder = new StringBuilder();
-                        builder.append(format.format(item.getPeriod().getStart()));
-                        builder.append(";");
-                        builder.append(item.getValue());
-                        writer.write(builder.toString());
-                        writer.newLine();
-                    }
+                    writeSMA(writer, format);
                 }
-                writer.write("Среднее значения = "+ysr);
+                writer.write("Среднее значения = " + ysr);
                 writer.newLine();
                 if(!error.isEmpty()){
-                    writer.write(error.getKey().toString());
-                    writer.newLine();
-                    for (Object o: error.getItems()){
-                        TimeSeriesDataItem item = (TimeSeriesDataItem) o;
-                        StringBuilder builder = new StringBuilder();
-                        builder.append(format.format(item.getPeriod().getStart()));
-                        builder.append(";");
-                        builder.append(item.getValue());
-                        writer.write(builder.toString());
-                        writer.newLine();
-                    }
+                    writeError(writer, format);
                 }
-                if(!prognoz.isEmpty()){
-                    writer.write(prognoz.getKey().toString());
-                    writer.newLine();
-                    for (Object o: prognoz.getItems()){
-                        TimeSeriesDataItem item = (TimeSeriesDataItem) o;
-                        StringBuilder builder = new StringBuilder();
-                        builder.append(format.format(item.getPeriod().getStart()));
-                        builder.append(";");
-                        builder.append(item.getValue());
-                        writer.write(builder.toString());
-                        writer.newLine();
-                    }
+                if(!forecast.isEmpty()){
+                    writeForecast(writer, format);
                 }
                 writer.flush();
                 writer.close();
@@ -220,6 +144,35 @@ private String[] trends = {"Линейный", "Параболический",
         catch (IOException e) {
             new ExceptionPane().show("Ошибка присохранении в файл", e);
         }
+    }
+
+    private void writeForecast(BufferedWriter writer, SimpleDateFormat format) throws IOException {
+        writer.write(forecast.getKey().toString());
+        writer.newLine();
+        for (Object o: forecast.getItems()){
+            writeLine(writer, format, (TimeSeriesDataItem) o);
+        }
+    }
+
+    private void writeError(BufferedWriter writer, SimpleDateFormat format) throws IOException {
+        writer.write(error.getKey().toString());
+        writer.newLine();
+        for (Object o: error.getItems()){
+            writeLine(writer, format, (TimeSeriesDataItem) o);
+        }
+    }
+
+    private void writeSMA(BufferedWriter writer, SimpleDateFormat format) throws IOException {
+        writer.write(sma.getKey().toString());
+        writer.newLine();
+        for (Object o: sma.getItems()){
+            writeLine(writer, format, (TimeSeriesDataItem) o);
+        }
+    }
+
+    private void writeLine(BufferedWriter writer, SimpleDateFormat format, TimeSeriesDataItem item) throws IOException {
+        writer.write(format.format(item.getPeriod().getStart()) + ";" + item.getValue());
+        writer.newLine();
     }
 
     private void addComponents(JLabel label, JComponent component, JPanel p, GridBagConstraints gbc){
@@ -279,7 +232,7 @@ private String[] trends = {"Линейный", "Параболический",
         TimeSeries adjustedSC = new TimeSeries("Скорректированная сезонная компонента");
         TimeSeries ts = new TimeSeries("ts");
         error = new TimeSeries("Остатки регрессии");
-        prognoz = new TimeSeries("Прогноз");
+        forecast = new TimeSeries("Прогноз");
         if(showCenterMoveLineSeries.isSelected()){
 //            collection.addSeries(centerMoveAgr);
         }
@@ -370,9 +323,9 @@ private String[] trends = {"Линейный", "Параболический",
                 v = Math.log(line.predict(p.getSerialIndex())) + Math.log(getValue(adjustedSC, i)) + Math.log(getValue(error, i));
                 v = Math.exp(v);
             }
-            prognoz.add(p, v);
+            forecast.add(p, v);
         }
-        collection.addSeries(prognoz);
+        collection.addSeries(forecast);
 
         JFreeChart chart = createChart();
         updateChart(chart);

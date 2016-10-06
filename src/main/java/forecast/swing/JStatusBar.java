@@ -3,25 +3,18 @@ package forecast.swing;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: damir
- * Date: 24.12.13
- * Time: 23:45
- * To change this template use File | Settings | File Templates.
- */
 public class JStatusBar extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    protected JPanel leftPanel;
-    protected JPanel rightPanel;
+    private JPanel leftPanel;
+    private JPanel rightPanel;
 
     public JStatusBar() {
         createPartControl();
     }
 
-    protected void createPartControl() {
+    private void createPartControl() {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(getWidth(), 23));
 

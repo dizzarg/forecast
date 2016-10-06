@@ -31,11 +31,11 @@ public class FileReaderSettingPane {
         }
     }
 
-    public String getSeparator() {
+    String getSeparator() {
         return separator;
     }
 
-    public RegularTimeEnum getTimeFormat() {
+    RegularTimeEnum getTimeFormat() {
         return timeFormat;
     }
 

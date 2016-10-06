@@ -10,11 +10,6 @@ import java.util.Map;
 
 public class TimeSeriesReader {
 
-//    public static final String years = "%d";
-//    public static final String month = "%d %d";
-//    public static final String days = "%d %d %d";
-//    public static final String quarter ="%d %d";
-
     private String separator;
     private RegularTimeEnum regularTime;
 
@@ -24,33 +19,6 @@ public class TimeSeriesReader {
 
     public void setRegularTime(RegularTimeEnum regularTime) {
         this.regularTime = regularTime;
-    }
-
-    public TimeSeries loadTimeSeriesFromFile(Comparable name, File file) throws Exception{
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        TimeSeries fileSeries = new TimeSeries(name);
-        Map<String, Double> fileValue = new HashMap<String, Double>();
-        RegularTimeEnum type = null;
-        while (reader.ready()){
-            String line = reader.readLine();
-            String[] values = line.split(";");
-            String[] dateValue = values[0].split(" ");
-            if(type==null){
-                if(dateValue.length==1) type=RegularTimeEnum.YEARS;
-                if(dateValue.length==3) type=RegularTimeEnum.DAYS;
-                if(dateValue.length==2){
-                    String year = dateValue[0];
-                    String part = dateValue[1];
-
-                }
-            }
-            fileValue.put(values[0], Double.valueOf(values[1]));
-        }
-        for (String s: fileValue.keySet()){
-
-        }
-        reader.close();
-        return fileSeries;
     }
 
     public void loadTimeSeriesFromFile(TimeSeries fileSeries,  File file) throws Exception{
@@ -90,7 +58,7 @@ public class TimeSeriesReader {
         return period;
     }
 
-    public static TimeSeries loadTimeSeriesFromFile(TimeSeries fileSeries, String timeFormat, File file, String separator) throws Exception{
+    public static TimeSeries loadTimeSeriesFromFile(TimeSeries fileSeries, File file, String separator) throws Exception{
         BufferedReader reader = new BufferedReader(new FileReader(file));
         while (reader.ready()){
             String line = reader.readLine();

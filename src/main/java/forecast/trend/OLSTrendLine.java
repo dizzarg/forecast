@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public abstract class OLSTrendLine implements TrendLine {
 
-    RealMatrix coef = null; // сбудет содержать прогнозируемые коэф(оцениваемые параметры) coefs
+    RealMatrix coef = null; // будет содержать прогнозируемые коэф(оцениваемые параметры) coefs
 
     protected abstract double[] xVector(double x); // создаем вектор из x
     protected abstract boolean logY(); // по умолчанию true logY, y>0, логарифмировать или нет

@@ -3,7 +3,7 @@ package forecast.utils;
 public enum RegularTimeEnum {
     YEARS("Годы"), MONTH("Месяцы"), DAYS("Дни"), QUARTER("Четверти");
 
-    private RegularTimeEnum(String desc) {
+    RegularTimeEnum(String desc) {
         this.desc = desc;
     }
 

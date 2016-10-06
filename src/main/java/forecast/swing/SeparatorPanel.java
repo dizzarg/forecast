@@ -3,13 +3,6 @@ package forecast.swing;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: damir
- * Date: 24.12.13
- * Time: 23:49
- * To change this template use File | Settings | File Templates.
- */
 public class SeparatorPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;

@@ -21,7 +21,6 @@ public class MainFrame extends JFrame{
     private HelpPane helpPane = new HelpPane();
     private AboutPane aboutPane = new AboutPane();
     private final FileReaderSettingPane fileReaderSettingPane = new FileReaderSettingPane();
-    protected TimerThread timerThread;
 
     public MainFrame(){
         super(APP_NAME);
@@ -104,7 +103,8 @@ public class MainFrame extends JFrame{
         statusBar.addRightComponent(timeLabel);
 
         contentPane.add(statusBar, BorderLayout.SOUTH);
-        timerThread = new TimerThread(dateLabel, timeLabel);
+
+        TimerThread timerThread = new TimerThread(dateLabel, timeLabel);
         timerThread.start();
 
         setSize(MAIN_SIZE);

@@ -2,6 +2,8 @@
 Simple application for create forecast for data
 
 [![Build Status](https://travis-ci.org/dizzarg/forecast.svg?branch=master)](https://travis-ci.org/dizzarg/forecast)
+[![Maintainability](https://api.codeclimate.com/v1/badges/41f7d7f795005e23d797/maintainability)](https://codeclimate.com/github/dizzarg/forecast/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/41f7d7f795005e23d797/test_coverage)](https://codeclimate.com/github/dizzarg/forecast/test_coverage)
 
 
 ## Requirements:

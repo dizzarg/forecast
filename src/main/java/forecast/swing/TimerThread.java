@@ -1,12 +1,9 @@
 package forecast.swing;
 
 import javax.swing.*;
-import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import static java.lang.Math.PI;
 
 public class TimerThread extends Thread {
 
@@ -27,14 +24,11 @@ public class TimerThread extends Thread {
     @Override
     public void run() {
         while (isRunning) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    Calendar currentCalendar = Calendar.getInstance();
-                    Date currentTime = currentCalendar.getTime();
-                    dateLabel.setText(dateFormat.format(currentTime));
-                    timeLabel.setText(timeFormat.format(currentTime));
-                }
+            SwingUtilities.invokeLater(() -> {
+                Calendar currentCalendar = Calendar.getInstance();
+                Date currentTime = currentCalendar.getTime();
+                dateLabel.setText(dateFormat.format(currentTime));
+                timeLabel.setText(timeFormat.format(currentTime));
             });
 
             try {

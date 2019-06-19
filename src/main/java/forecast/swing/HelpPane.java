@@ -47,48 +47,36 @@ public class HelpPane {
             }
         });
         JButton btn1 = new JButton("Виды тренда");
-        btn1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String str = readHelpFile("/help/trend_kind.html");
-                textPane.setText(str);
-                textPane.setCaretPosition(0);
-                textPane.repaint();
-                textPane.revalidate();
-            }
+        btn1.addActionListener(e -> {
+            String str = readHelpFile("/help/trend_kind.html");
+            textPane.setText(str);
+            textPane.setCaretPosition(0);
+            textPane.repaint();
+            textPane.revalidate();
         });
         JButton btn2 = new JButton("Методы оценки тренда");
-        btn2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String str = readHelpFile("/help/methods.html");
-                textPane.setText(str);
-                textPane.setCaretPosition(0);
-                textPane.repaint();
-                textPane.revalidate();
-            }
+        btn2.addActionListener(e -> {
+            String str = readHelpFile("/help/methods.html");
+            textPane.setText(str);
+            textPane.setCaretPosition(0);
+            textPane.repaint();
+            textPane.revalidate();
         });
         JButton btn3 = new JButton("Линии тренда");
-        btn3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String str = readHelpFile("/help/trend_line.html");
-                textPane.setText(str);
-                textPane.setCaretPosition(0);
-                textPane.repaint();
-                textPane.revalidate();
-            }
+        btn3.addActionListener(e -> {
+            String str = readHelpFile("/help/trend_line.html");
+            textPane.setText(str);
+            textPane.setCaretPosition(0);
+            textPane.repaint();
+            textPane.revalidate();
         });
         JButton btn4 = new JButton("Типы тренда");
-        btn4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String str = readHelpFile("/help/trend_type.html");
-                textPane.setText(str);
-                textPane.setCaretPosition(0);
-                textPane.repaint();
-                textPane.revalidate();
-            }
+        btn4.addActionListener(e -> {
+            String str = readHelpFile("/help/trend_type.html");
+            textPane.setText(str);
+            textPane.setCaretPosition(0);
+            textPane.repaint();
+            textPane.revalidate();
         });
         btnPane.add(btn0);
         btnPane.add(btn1);

@@ -17,10 +17,10 @@ public class FileReaderSettingPane {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
-        JComboBox comboBox = new JComboBox(new String[]{";", ","});
+        JComboBox comboBox = new JComboBox<>(new String[]{";", ","});
         comboBox.setSelectedItem(separator);
         addComponents(new JLabel("Разделитель:"), comboBox, panel, gbc);
-        JComboBox regularTimeEnumJComboBox = new JComboBox(RegularTimeEnum.values());
+        JComboBox regularTimeEnumJComboBox = new JComboBox<>(RegularTimeEnum.values());
         regularTimeEnumJComboBox.setSelectedItem(timeFormat);
         addComponents(new JLabel("Формат временного периода:"), regularTimeEnumJComboBox, panel, gbc);
 

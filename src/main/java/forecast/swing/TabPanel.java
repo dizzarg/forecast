@@ -11,18 +11,12 @@ import org.jfree.data.time.TimeSeriesDataItem;
 import org.jfree.ui.ExtensionFileFilter;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-
-import static forecast.utils.TimeSeriesReader.loadTimeSeriesFromFile;
 
 public class TabPanel extends JPanel{
 
@@ -47,23 +41,15 @@ public class TabPanel extends JPanel{
     public TabPanel(String title, TimeSeries fileSeries) {
         setLayout(new BorderLayout());
 
-        showCenterMoveLineSeries.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updatePanel();
-            }
-        });
+        showCenterMoveLineSeries.addActionListener(e -> updatePanel());
 
         JPanel settingPane = new JPanel();
         settingPane.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2,2,2,2);
-        periodSpinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                infoPane.revalidate();
-                infoPane.repaint();
-            }
+        periodSpinner.addChangeListener(e -> {
+            infoPane.revalidate();
+            infoPane.repaint();
         });
         addComponents(new JLabel("Период:"), periodSpinner, settingPane, gbc);
         ButtonGroup group = new ButtonGroup();
@@ -76,20 +62,10 @@ public class TabPanel extends JPanel{
         addComponents(new JLabel("Тип модели:"), groupPane, settingPane, gbc);
         addComponents(new JLabel("Тип тренда:"), trendBox, settingPane, gbc);
         JButton updateButton = new JButton("Обновить");
-        updateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updatePanel();
-            }
-        });
+        updateButton.addActionListener(e -> updatePanel());
         addCenterComponents(updateButton, settingPane, gbc);
         JButton saveFromFileButton = new JButton("Сохранить в файл");
-        saveFromFileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                saveToFile();
-            }
-        });
+        saveFromFileButton.addActionListener(event -> saveToFile());
         addCenterComponents(saveFromFileButton, settingPane, gbc);
         updateInfoPane();
 
@@ -120,24 +96,24 @@ public class TabPanel extends JPanel{
             fileChooser.showSaveDialog(null);
             File file = fileChooser.getSelectedFile();
             if(file!=null){
-                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-                SimpleDateFormat format = new SimpleDateFormat("yyyy MM dd");
-                if(!sma.isEmpty()){
-                    writeSMA(writer, format);
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy MM dd");
+                    if (!sma.isEmpty()) {
+                        writeSMA(writer, format);
+                    }
+                    if (!sma.isEmpty()) {
+                        writeSMA(writer, format);
+                    }
+                    writer.write("Среднее значения = " + ysr);
+                    writer.newLine();
+                    if (!error.isEmpty()) {
+                        writeError(writer, format);
+                    }
+                    if (!forecast.isEmpty()) {
+                        writeForecast(writer, format);
+                    }
+                    writer.flush();
                 }
-                if(!sma.isEmpty()){
-                    writeSMA(writer, format);
-                }
-                writer.write("Среднее значения = " + ysr);
-                writer.newLine();
-                if(!error.isEmpty()){
-                    writeError(writer, format);
-                }
-                if(!forecast.isEmpty()){
-                    writeForecast(writer, format);
-                }
-                writer.flush();
-                writer.close();
                 JOptionPane.showMessageDialog(this, "Файл успешно сохранен!");
             }
         }

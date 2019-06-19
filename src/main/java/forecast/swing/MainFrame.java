@@ -6,7 +6,6 @@ import org.jfree.data.time.TimeSeries;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -32,57 +31,22 @@ public class MainFrame extends JFrame{
 
         JMenu fileMenu = new JMenu("Файл");
         KeyStroke newKey = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK);
-        fileMenu.add(createMenuItem("Новый", newKey, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createTab();
-            }
-        }));
+        fileMenu.add(createMenuItem("Новый", newKey, e -> createTab()));
         KeyStroke settingKey = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK);
-        fileMenu.add(createMenuItem("Настройки чтения", settingKey, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fileReaderSettingPane.show();
-            }
-        }));
+        fileMenu.add(createMenuItem("Настройки чтения", settingKey, e -> fileReaderSettingPane.show()));
         fileMenu.addSeparator();
         KeyStroke closeTabKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK);
-        fileMenu.add(createMenuItem("Закрыть", closeTabKey, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                closeSelectedTab();
-            }
-        }));
+        fileMenu.add(createMenuItem("Закрыть", closeTabKey, e -> closeSelectedTab()));
         KeyStroke closeAllTabKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK);
-        fileMenu.add(createMenuItem("Закрыть все", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabbedPane.removeAll();
-            }
-        }));
+        fileMenu.add(createMenuItem("Закрыть все", e -> tabbedPane.removeAll()));
         fileMenu.addSeparator();
         KeyStroke exitKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.ALT_MASK);
-        fileMenu.add(createMenuItem("Выход", exitKey, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        }));
+        fileMenu.add(createMenuItem("Выход", exitKey, e -> System.exit(0)));
 
         JMenu aboutMenu = new JMenu("Помощь");
-        aboutMenu.add(createMenuItem("Справка", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                helpPane.show();
-            }
-        }));
+        aboutMenu.add(createMenuItem("Справка", e -> helpPane.show()));
 
-        aboutMenu.add(createMenuItem("О программе", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                aboutPane.show();
-            }
-        }));
+        aboutMenu.add(createMenuItem("О программе", e -> aboutPane.show()));
 
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(fileMenu);

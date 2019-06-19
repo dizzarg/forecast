@@ -5,8 +5,7 @@ import org.jfree.data.time.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
 public class TimeSeriesReader {
 
@@ -21,16 +20,16 @@ public class TimeSeriesReader {
         this.regularTime = regularTime;
     }
 
-    public void loadTimeSeriesFromFile(TimeSeries fileSeries,  File file) throws Exception{
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        while (reader.ready()){
-            String line = reader.readLine();
-            String[] values = line.split(separator);
-            RegularTimePeriod period = parsePeriod(values[0]);
-            Double value = Double.parseDouble(values[1]);
-            fileSeries.add(period, value);
+    public void loadTimeSeriesFromFile(TimeSeries fileSeries,  File file) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            while (reader.ready()) {
+                String line = reader.readLine();
+                String[] values = line.split(separator);
+                RegularTimePeriod period = parsePeriod(values[0]);
+                Double value = Double.parseDouble(values[1]);
+                fileSeries.add(period, value);
+            }
         }
-        reader.close();
     }
 
     private RegularTimePeriod parsePeriod(String value) {
@@ -53,19 +52,24 @@ public class TimeSeriesReader {
                 Year year = new Year(Integer.parseInt(vals[0]));
                 period = new Quarter(Integer.parseInt(vals[1]), year);
             } break;
-            case YEARS: period = new Year(Integer.parseInt(value)); break;
+            case YEARS:
+                period = new Year(Integer.parseInt(value));
+                break;
+            default:
+                // Nothing to do
         }
         return period;
     }
 
-    public static TimeSeries loadTimeSeriesFromFile(TimeSeries fileSeries, File file, String separator) throws Exception{
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        while (reader.ready()){
-            String line = reader.readLine();
-            String[] values = line.split(separator);
-            Year year = new Year(Integer.parseInt(values[0]));
-            Double value = Double.parseDouble(values[1]);
-            fileSeries.add(year, value);
+    public static TimeSeries loadTimeSeriesFromFile(TimeSeries fileSeries, File file, String separator) throws IOException{
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            while (reader.ready()) {
+                String line = reader.readLine();
+                String[] values = line.split(separator);
+                Year year = new Year(Integer.parseInt(values[0]));
+                Double value = Double.parseDouble(values[1]);
+                fileSeries.add(year, value);
+            }
         }
         return fileSeries;
     }

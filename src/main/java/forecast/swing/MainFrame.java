@@ -113,7 +113,7 @@ public class MainFrame extends JFrame{
                 reader.setSeparator(fileReaderSettingPane.getSeparator());
                 reader.loadTimeSeriesFromFile(fileSeries, file);
                 TabPanel panel = new TabPanel(file.getName() ,fileSeries);
-                tabbedPane.addTab(panel.getTitle(), panel);
+                tabbedPane.addTab(file.getName(), panel);
             } catch (Exception e) {
                 ExceptionPane.show("Ошибка при отрисовке графика с файла", e);
             }

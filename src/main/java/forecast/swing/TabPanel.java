@@ -20,18 +20,17 @@ import java.text.SimpleDateFormat;
 
 public class TabPanel extends JPanel{
 
-    private String title =null;
     private ChartPanel chartPanel = null;
     private JPanel infoPane = new JPanel();
     private JCheckBox showCenterMoveLineSeries = new JCheckBox("Отобразить центрировую скользящую средную:", false);
     private JSpinner periodSpinner = new JSpinner();
     private String[] trends = {"Линейный", "Параболический",
         "Логарифмическая", "Степенная", "Экспоненциальная"};
-    private JComboBox trendBox = new JComboBox(trends);
+    private JComboBox trendBox = new JComboBox<>(trends);
     private JRadioButton addTypeBth = new JRadioButton("Аддетивная", true);
     private JRadioButton multiTypeBth = new JRadioButton("Мультипликативная", false);
     private TimeSeriesCollection collection = new TimeSeriesCollection();
-    private TimeSeries fileSeries = new TimeSeries("Данные с файла");
+    private TimeSeries fileSeries;
     private double R2;
     private TimeSeries sma;
     private TimeSeries forecast;
@@ -39,14 +38,15 @@ public class TabPanel extends JPanel{
     private double ysr;
 
     public TabPanel(String title, TimeSeries fileSeries) {
-        setLayout(new BorderLayout());
+        this.fileSeries = fileSeries;
 
-        showCenterMoveLineSeries.addActionListener(e -> updatePanel());
+        setLayout(new BorderLayout());
+        showCenterMoveLineSeries.addActionListener(e -> updatePanel(title));
 
         JPanel settingPane = new JPanel();
         settingPane.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2,2,2,2);
+        gbc.insets = new Insets(2, 2, 2, 2);
         periodSpinner.addChangeListener(e -> {
             infoPane.revalidate();
             infoPane.repaint();
@@ -62,7 +62,7 @@ public class TabPanel extends JPanel{
         addComponents(new JLabel("Тип модели:"), groupPane, settingPane, gbc);
         addComponents(new JLabel("Тип тренда:"), trendBox, settingPane, gbc);
         JButton updateButton = new JButton("Обновить");
-        updateButton.addActionListener(e -> updatePanel());
+        updateButton.addActionListener(e -> updatePanel(title));
         addCenterComponents(updateButton, settingPane, gbc);
         JButton saveFromFileButton = new JButton("Сохранить в файл");
         saveFromFileButton.addActionListener(event -> saveToFile());
@@ -73,18 +73,15 @@ public class TabPanel extends JPanel{
         panel.add(settingPane);
         add(infoPane, BorderLayout.NORTH);
         add(panel, BorderLayout.EAST);
-
-        this.title = title;
-        this.fileSeries = fileSeries;
         collection.addSeries(fileSeries);
-        JFreeChart chart = createChart();
+        JFreeChart chart = createChart(title);
         updateChart(chart);
         add(chartPanel, BorderLayout.CENTER);
     }
 
-    public String getTitle() {
-        return title;
-    }
+//    public String getTitle() {
+//        return title;
+//    }
 
     private void saveToFile() {
         try {
@@ -177,7 +174,7 @@ public class TabPanel extends JPanel{
         infoPane.add(new JLabel(String.format("Коэффициент детерминации = %s", R2)));
     }
 
-    private void updatePanel() {
+    private void updatePanel(String title) {
         Integer period = (Integer) periodSpinner.getValue();
         int itemCount = fileSeries.getItemCount();
         collection = new TimeSeriesCollection();
@@ -303,7 +300,7 @@ public class TabPanel extends JPanel{
         }
         collection.addSeries(forecast);
 
-        JFreeChart chart = createChart();
+        JFreeChart chart = createChart(title);
         updateChart(chart);
         infoPane.removeAll();
         updateInfoPane();
@@ -341,9 +338,9 @@ public class TabPanel extends JPanel{
         return timeSeries.getValue(i).doubleValue();
     }
 
-    private JFreeChart createChart() {
+    private JFreeChart createChart(String title) {
         return ChartFactory.createTimeSeriesChart(
-                this.title,
+                title,
                 "Временной ряд",
                 "Значения ряда",
                 collection,

@@ -10,6 +10,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class MainFrame extends JFrame{
 
@@ -20,6 +25,10 @@ public class MainFrame extends JFrame{
     private HelpPane helpPane = new HelpPane();
     private AboutPane aboutPane = new AboutPane();
     private final FileReaderSettingPane fileReaderSettingPane = new FileReaderSettingPane();
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy");
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
+
 
     public MainFrame(){
         super(APP_NAME);
@@ -67,8 +76,13 @@ public class MainFrame extends JFrame{
 
         contentPane.add(statusBar, BorderLayout.SOUTH);
 
-        TimerThread timerThread = new TimerThread(dateLabel, timeLabel);
-        timerThread.start();
+        Executors.newSingleThreadScheduledExecutor()
+                .scheduleAtFixedRate(() -> {
+                    Calendar currentCalendar = Calendar.getInstance();
+                    Date currentTime = currentCalendar.getTime();
+                    dateLabel.setText(dateFormat.format(currentTime));
+                    timeLabel.setText(timeFormat.format(currentTime));
+                }, 0, 1, TimeUnit.SECONDS);
 
         setSize(MAIN_SIZE);
         setVisible(true);

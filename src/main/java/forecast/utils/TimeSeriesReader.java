@@ -61,17 +61,4 @@ public class TimeSeriesReader {
         return period;
     }
 
-    public static TimeSeries loadTimeSeriesFromFile(TimeSeries fileSeries, File file, String separator) throws IOException{
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            while (reader.ready()) {
-                String line = reader.readLine();
-                String[] values = line.split(separator);
-                Year year = new Year(Integer.parseInt(values[0]));
-                Double value = Double.parseDouble(values[1]);
-                fileSeries.add(year, value);
-            }
-        }
-        return fileSeries;
-    }
-
 }

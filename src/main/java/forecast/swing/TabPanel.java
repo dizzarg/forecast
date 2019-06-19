@@ -30,7 +30,7 @@ public class TabPanel extends JPanel{
     private JRadioButton addTypeBth = new JRadioButton("Аддетивная", true);
     private JRadioButton multiTypeBth = new JRadioButton("Мультипликативная", false);
     private TimeSeriesCollection collection = new TimeSeriesCollection();
-    private double R2;
+    private double determination;
     private TimeSeries sma;
     private TimeSeries forecast;
     private TimeSeries error;
@@ -164,7 +164,7 @@ public class TabPanel extends JPanel{
         } else {
             infoPane.add(new JLabel("Тип тренда: " + multiTypeBth.getText()));
         }
-        infoPane.add(new JLabel(String.format("Коэффициент детерминации = %s", R2)));
+        infoPane.add(new JLabel(String.format("Коэффициент детерминации = %s", determination)));
     }
 
     private void updatePanel(String title, TimeSeries fileSeries) {
@@ -277,7 +277,7 @@ public class TabPanel extends JPanel{
             e2 += e*e;
             yysr += (f-ysr)*(f-ysr);
         }
-        R2 = 1-e2/yysr;
+        determination = 1 - e2 / yysr;
         RegularTimePeriod p = fileSeries.getTimePeriod(itemCount-1);
         for (int i=0; i<period; i++){
             p = p.next();

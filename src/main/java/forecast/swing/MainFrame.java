@@ -37,10 +37,9 @@ public class MainFrame extends JFrame{
         fileMenu.addSeparator();
         KeyStroke closeTabKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK);
         fileMenu.add(createMenuItem("Закрыть", closeTabKey, e -> closeSelectedTab()));
-        KeyStroke closeAllTabKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK);
         fileMenu.add(createMenuItem("Закрыть все", e -> tabbedPane.removeAll()));
         fileMenu.addSeparator();
-        KeyStroke exitKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.ALT_MASK);
+        KeyStroke exitKey = KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.ALT_MASK);
         fileMenu.add(createMenuItem("Выход", exitKey, e -> System.exit(0)));
 
         JMenu aboutMenu = new JMenu("Помощь");

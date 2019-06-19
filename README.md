@@ -8,10 +8,10 @@ Simple application for create forecast for data
 
 ## Requirements:
 
-  * Oracle Java SE Development Kit 6 (or newer)
-  * Gradle 2.x (or newer)
+  * Oracle Java SE Development Kit 8 (or newer)
+  * Gradle 4.x (or newer)
   * Git 1.7.x (or newer)
 
 ## Build
 
-The project is built by a command `gradle build`.
+The project is built by a command `./gradlew build`.

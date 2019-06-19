@@ -115,7 +115,7 @@ public class MainFrame extends JFrame{
                 TabPanel panel = new TabPanel(file.getName() ,fileSeries);
                 tabbedPane.addTab(panel.getTitle(), panel);
             } catch (Exception e) {
-                new ExceptionPane().show("Ошибка при отрисовке графика с файла", e);
+                ExceptionPane.show("Ошибка при отрисовке графика с файла", e);
             }
 
         }

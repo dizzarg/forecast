@@ -96,9 +96,9 @@ public class HelpPane {
             return bufferedReader.lines()
                     .collect(Collectors.joining());
         } catch (IOException e) {
-            new ExceptionPane().show("Ошибка чтение файла", e);
+            ExceptionPane.show("Ошибка чтение файла", e);
         } catch (Exception e) {
-            new ExceptionPane().show("Ошибка", e);
+            ExceptionPane.show("Ошибка", e);
         }
         return "";
     }

@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class ExceptionPane {
 
-    public void show(String title, Exception e) {
+    public static void show(String title, Exception e) {
         StringBuilder sb = new StringBuilder();
         sb.append(e.getMessage());
         sb.append("\n");

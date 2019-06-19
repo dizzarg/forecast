@@ -118,7 +118,7 @@ public class TabPanel extends JPanel{
             }
         }
         catch (IOException e) {
-            new ExceptionPane().show("Ошибка присохранении в файл", e);
+            ExceptionPane.show("Ошибка присохранении в файл", e);
         }
     }
 

@@ -6,9 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.stream.Collectors;
 
 public class HelpPane {
 
@@ -18,7 +18,7 @@ public class HelpPane {
         String trentFile = "/help/trend.html";
         String buffer = readHelpFile(trentFile);
         URL imgUrl = getClass().getClassLoader().getResource("image/trend3.jpg");
-        String htmlString = "<center><img src=\"" +imgUrl.toString()+"\" /></center>";
+        String htmlString = "<center><img src=\"" + imgUrl + "\" /></center>";
         buffer = htmlString + buffer;
         final JTextPane textPane = new JTextPane();
         textPane.setEditable(false);
@@ -38,7 +38,7 @@ public class HelpPane {
             public void actionPerformed(ActionEvent e) {
                 String str = readHelpFile("/help/trend.html");
                 URL imgUrl = getClass().getClassLoader().getResource("image/trend3.jpg");
-                String htmlString = "<img src=\"" +imgUrl.toString()+"\" />";
+                String htmlString = "<img src=\"" + imgUrl + "\" />";
                 str = htmlString + str;
                 textPane.setText(str);
                 textPane.setCaretPosition(0);
@@ -90,22 +90,16 @@ public class HelpPane {
     }
 
     private String readHelpFile(String trentFile) {
-        String file = "";
-        try {
-            InputStream is = getClass().getResourceAsStream(trentFile);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-            StringBuffer buffer = new StringBuffer();
-            while (bufferedReader.ready()) {
-                String line = bufferedReader.readLine();
-                buffer.append(line);
-                buffer.append("\n");
-            }
-            file = buffer.toString();
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(getClass().getResourceAsStream(trentFile))
+        )) {
+            return bufferedReader.lines()
+                    .collect(Collectors.joining());
         } catch (IOException e) {
             new ExceptionPane().show("Ошибка чтение файла", e);
         } catch (Exception e) {
             new ExceptionPane().show("Ошибка", e);
         }
-        return file;
+        return "";
     }
 }

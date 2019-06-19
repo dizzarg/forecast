@@ -30,7 +30,6 @@ public class TabPanel extends JPanel{
     private JRadioButton addTypeBth = new JRadioButton("Аддетивная", true);
     private JRadioButton multiTypeBth = new JRadioButton("Мультипликативная", false);
     private TimeSeriesCollection collection = new TimeSeriesCollection();
-    private TimeSeries fileSeries;
     private double R2;
     private TimeSeries sma;
     private TimeSeries forecast;
@@ -38,10 +37,8 @@ public class TabPanel extends JPanel{
     private double ysr;
 
     public TabPanel(String title, TimeSeries fileSeries) {
-        this.fileSeries = fileSeries;
-
         setLayout(new BorderLayout());
-        showCenterMoveLineSeries.addActionListener(e -> updatePanel(title));
+        showCenterMoveLineSeries.addActionListener(e -> updatePanel(title, fileSeries));
 
         JPanel settingPane = new JPanel();
         settingPane.setLayout(new GridBagLayout());
@@ -62,7 +59,7 @@ public class TabPanel extends JPanel{
         addComponents(new JLabel("Тип модели:"), groupPane, settingPane, gbc);
         addComponents(new JLabel("Тип тренда:"), trendBox, settingPane, gbc);
         JButton updateButton = new JButton("Обновить");
-        updateButton.addActionListener(e -> updatePanel(title));
+        updateButton.addActionListener(e -> updatePanel(title, fileSeries));
         addCenterComponents(updateButton, settingPane, gbc);
         JButton saveFromFileButton = new JButton("Сохранить в файл");
         saveFromFileButton.addActionListener(event -> saveToFile());
@@ -78,10 +75,6 @@ public class TabPanel extends JPanel{
         updateChart(chart);
         add(chartPanel, BorderLayout.CENTER);
     }
-
-//    public String getTitle() {
-//        return title;
-//    }
 
     private void saveToFile() {
         try {
@@ -174,7 +167,7 @@ public class TabPanel extends JPanel{
         infoPane.add(new JLabel(String.format("Коэффициент детерминации = %s", R2)));
     }
 
-    private void updatePanel(String title) {
+    private void updatePanel(String title, TimeSeries fileSeries) {
         Integer period = (Integer) periodSpinner.getValue();
         int itemCount = fileSeries.getItemCount();
         collection = new TimeSeriesCollection();

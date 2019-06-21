@@ -265,7 +265,7 @@ public class TabPanel extends JPanel{
         ysr=ysr/itemCount;
         double e2 =0; // ESS - сумма квадратов остатков регрессии
         double yysr =0;  // TSS - общая сумма квадратов.
-        for (int i=0; i<itemCount; i++){
+        for (int i = 0; i < itemCount - 1; i++) {
             double t = getValue(trendSeries, i);
             double s = getValue(adjustedSC, i);
             double f = getValue(fileSeries, i);
@@ -328,9 +328,6 @@ public class TabPanel extends JPanel{
     }
 
     private double getValue(TimeSeries timeSeries, int i) {
-        if (timeSeries.getItemCount() > i) {
-            return 0;
-        }
         return timeSeries.getValue(i).doubleValue();
     }
 

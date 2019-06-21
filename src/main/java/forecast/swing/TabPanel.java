@@ -328,6 +328,9 @@ public class TabPanel extends JPanel{
     }
 
     private double getValue(TimeSeries timeSeries, int i) {
+        if (timeSeries.getItemCount() > i) {
+            return 0;
+        }
         return timeSeries.getValue(i).doubleValue();
     }
 

@@ -23,7 +23,6 @@ public class MainFrame extends JFrame{
     private final JTabbedPane tabbedPane = new JTabbedPane();
     private TimeSeriesReader reader = new TimeSeriesReader();
     private HelpPane helpPane = new HelpPane();
-    private AboutPane aboutPane = new AboutPane();
     private final FileReaderSettingPane fileReaderSettingPane = new FileReaderSettingPane();
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy");
@@ -54,7 +53,7 @@ public class MainFrame extends JFrame{
         JMenu aboutMenu = new JMenu("Помощь");
         aboutMenu.add(createMenuItem("Справка", e -> helpPane.show()));
 
-        aboutMenu.add(createMenuItem("О программе", e -> aboutPane.show()));
+        aboutMenu.add(createMenuItem("О программе", e -> AboutPane.show()));
 
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(fileMenu);

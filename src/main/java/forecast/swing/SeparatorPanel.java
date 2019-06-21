@@ -7,8 +7,8 @@ public class SeparatorPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    protected Color leftColor;
-    protected Color rightColor;
+    private Color leftColor;
+    private Color rightColor;
 
     public SeparatorPanel(Color leftColor, Color rightColor) {
         this.leftColor = leftColor;

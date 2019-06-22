@@ -1,5 +1,6 @@
 package forecast.swing;
 
+import forecast.swing.tab.TabPanel;
 import forecast.utils.TimeSeriesReader;
 import org.jfree.data.time.TimeSeries;
 

@@ -1,5 +1,6 @@
-package forecast.swing;
+package forecast.swing.tab;
 
+import forecast.swing.ExceptionPane;
 import forecast.trend.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;

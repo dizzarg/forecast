@@ -1,7 +1,7 @@
 package forecast.swing.tab;
 
 import forecast.swing.ExceptionPane;
-import forecast.trend.*;
+import forecast.trend.TrendLine;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -22,14 +22,10 @@ import java.text.SimpleDateFormat;
 public class TabPanel extends JPanel{
 
     private ChartPanel chartPanel = null;
+
     private JPanel infoPane = new JPanel();
+    private SettingPane settingPane;
     private JCheckBox showCenterMoveLineSeries = new JCheckBox("Отобразить центрировую скользящую средную:", false);
-    private JSpinner periodSpinner = new JSpinner();
-    private String[] trends = {"Линейный", "Параболический",
-        "Логарифмическая", "Степенная", "Экспоненциальная"};
-    private JComboBox trendBox = new JComboBox<>(trends);
-    private JRadioButton addTypeBth = new JRadioButton("Аддетивная", true);
-    private JRadioButton multiTypeBth = new JRadioButton("Мультипликативная", false);
     private TimeSeriesCollection collection = new TimeSeriesCollection();
     private double determination;
     private TimeSeries sma;
@@ -41,30 +37,14 @@ public class TabPanel extends JPanel{
         setLayout(new BorderLayout());
         showCenterMoveLineSeries.addActionListener(e -> updatePanel(title, fileSeries));
 
-        JPanel settingPane = new JPanel();
-        settingPane.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 2, 2, 2);
-        periodSpinner.addChangeListener(e -> {
-            infoPane.revalidate();
-            infoPane.repaint();
-        });
-        addComponents(new JLabel("Период:"), periodSpinner, settingPane, gbc);
-        ButtonGroup group = new ButtonGroup();
-        group.add(addTypeBth);
-        group.add(multiTypeBth);
-        JPanel groupPane = new JPanel();
-        groupPane.setLayout(new GridLayout(2, 1));
-        groupPane.add(addTypeBth);
-        groupPane.add(multiTypeBth);
-        addComponents(new JLabel("Тип модели:"), groupPane, settingPane, gbc);
-        addComponents(new JLabel("Тип тренда:"), trendBox, settingPane, gbc);
-        JButton updateButton = new JButton("Обновить");
-        updateButton.addActionListener(e -> updatePanel(title, fileSeries));
-        addCenterComponents(updateButton, settingPane, gbc);
-        JButton saveFromFileButton = new JButton("Сохранить в файл");
-        saveFromFileButton.addActionListener(event -> saveToFile());
-        addCenterComponents(saveFromFileButton, settingPane, gbc);
+        settingPane = new SettingPane(
+                e -> updatePanel(title, fileSeries),
+                e -> saveToFile(),
+                e -> {
+                    infoPane.revalidate();
+                    infoPane.repaint();
+                }
+        );
         updateInfoPane();
 
         JPanel panel = new JPanel();
@@ -142,34 +122,24 @@ public class TabPanel extends JPanel{
         writer.newLine();
     }
 
-    private void addComponents(JLabel label, JComponent component, JPanel p, GridBagConstraints gbc){
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.gridwidth = GridBagConstraints.RELATIVE;
-        p.add(label, gbc);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        p.add(component, gbc);
-    }
-
-    private void addCenterComponents(JComponent component, JPanel p, GridBagConstraints gbc){
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        p.add(component, gbc);
-    }
-
     private void updateInfoPane() {
-        infoPane.add(new JLabel("Перод: "+periodSpinner.getValue()));
-        infoPane.add(new JLabel("Модель тренда: "+trendBox.getSelectedItem()));
-        if(addTypeBth.isSelected()){
-            infoPane.add(new JLabel("Тип тренда: " + addTypeBth.getText()));
-        } else {
-            infoPane.add(new JLabel("Тип тренда: " + multiTypeBth.getText()));
+        infoPane.add(new JLabel("Перод: " + settingPane.getPeriodValue()));
+        infoPane.add(new JLabel("Модель тренда: " + settingPane.getSelectedTred()));
+        switch (settingPane.getModelType()) {
+            case ADD:
+                infoPane.add(new JLabel("Тип тренда: аддетивная"));
+                break;
+            case MULTI:
+                infoPane.add(new JLabel("Тип тренда: мультипликативная"));
+                break;
+            default:
+                // nothing to do
         }
         infoPane.add(new JLabel(String.format("Коэффициент детерминации = %s", determination)));
     }
 
     private void updatePanel(String title, TimeSeries fileSeries) {
-        Integer period = (Integer) periodSpinner.getValue();
+        Integer period = settingPane.getPeriodValue();
         int itemCount = fileSeries.getItemCount();
         collection = new TimeSeriesCollection();
         collection.addSeries(fileSeries);
@@ -224,11 +194,15 @@ public class TabPanel extends JPanel{
                 sum+=pokazateli[i];
             }
             double k = 1;
-            if(addTypeBth.isSelected()){
-                k = period/sum;
-            }
-            if(multiTypeBth.isSelected()){
-                k = period/sum;
+            switch (settingPane.getModelType()) {
+                case ADD:
+                    k = period / sum;
+                    break;
+                case MULTI:
+                    k = period / sum;
+                    break;
+                default:
+                    // nothing to do
             }
             for (int i=0; i<pokazateli.length;i++){
               //  pokazateli[i] = getAResult(pokazateli[i], k);
@@ -240,15 +214,7 @@ public class TabPanel extends JPanel{
         }
 //        collection.addSeries(adjustedSC);
 
-        TrendLine line = null;
-        switch (trendBox.getSelectedIndex()){
-            case 0: line = new PolyTrendLine(1); break;
-            case 1: line = new PolyTrendLine(2); break;
-            case 2: line = new LogTrendLine(); break;
-            case 3: line = new PowerTrendLine(); break;
-            case 4: line = new ExpTrendLine(); break;
-            case 5: line = new PolyTrendLine(3); break;
-        }
+        TrendLine line = settingPane.getTrendLine();
         double[] x = new double[itemCount];
         double[] y = new double[itemCount];
         for (int i=0; i<itemCount; i++){
@@ -283,12 +249,16 @@ public class TabPanel extends JPanel{
         for (int i=0; i<period; i++){
             p = p.next();
             double v=0;
-            if(addTypeBth.isSelected()){
-                v = line.predict(p.getSerialIndex()) + getValue(adjustedSC, i) + getValue(error, i);
-            }
-            if(multiTypeBth.isSelected()){
-                v = Math.log(line.predict(p.getSerialIndex())) + Math.log(getValue(adjustedSC, i)) + Math.log(getValue(error, i));
-                v = Math.exp(v);
+            switch (settingPane.getModelType()) {
+                case ADD:
+                    v = line.predict(p.getSerialIndex()) + getValue(adjustedSC, i) + getValue(error, i);
+                    break;
+                case MULTI:
+                    v = Math.log(line.predict(p.getSerialIndex())) + Math.log(getValue(adjustedSC, i)) + Math.log(getValue(error, i));
+                    v = Math.exp(v);
+                    break;
+                default:
+                    // nothing to do
             }
             forecast.add(p, v);
         }
@@ -304,22 +274,30 @@ public class TabPanel extends JPanel{
 
     private double getResult(double f, double c) {
         double result = 0;
-        if(addTypeBth.isSelected()){
-            result = f - c;
-        }
-        if(multiTypeBth.isSelected()){
-            result = f / c;
+        switch (settingPane.getModelType()) {
+            case ADD:
+                result = f - c;
+                break;
+            case MULTI:
+                result = f / c;
+                break;
+            default:
+                // nothing to do
         }
         return result;
     }
 
     private double getAResult(double f, double c) {
         double result = 0;
-        if(addTypeBth.isSelected()){
-            result = f + c;
-        }
-        if(multiTypeBth.isSelected()){
-            result = f * c;
+        switch (settingPane.getModelType()) {
+            case ADD:
+                result = f + c;
+                break;
+            case MULTI:
+                result = f * c;
+                break;
+            default:
+                // nothing to do
         }
         return result;
     }

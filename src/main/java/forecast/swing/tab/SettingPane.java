@@ -13,8 +13,7 @@ public class SettingPane extends JPanel {
     private String[] trends = {"Линейный", "Параболический",
             "Логарифмическая", "Степенная", "Экспоненциальная"};
     private JComboBox trendBox = new JComboBox<>(trends);
-    private JRadioButton addTypeBth = new JRadioButton("Аддетивная", true);
-    private JRadioButton multiTypeBth = new JRadioButton("Мультипликативная", false);
+    private ModelType modelType = ModelType.ADD;
 
     public SettingPane(ActionListener updatePanel,
                        ActionListener saveToFile,
@@ -24,9 +23,15 @@ public class SettingPane extends JPanel {
         gbc.insets = new Insets(2, 2, 2, 2);
         periodSpinner.addChangeListener(periodSpinnerAction);
         addComponents(new JLabel("Период:"), periodSpinner, gbc);
+
+        JRadioButton addTypeBth = new JRadioButton("Аддетивная", true);
+        JRadioButton multiTypeBth = new JRadioButton("Мультипликативная", false);
         ButtonGroup group = new ButtonGroup();
         group.add(addTypeBth);
         group.add(multiTypeBth);
+        addTypeBth.addActionListener(e -> modelType = ModelType.ADD);
+        multiTypeBth.addActionListener(e -> modelType = ModelType.MULTI);
+
         JPanel groupPane = new JPanel();
         groupPane.setLayout(new GridLayout(2, 1));
         groupPane.add(addTypeBth);
@@ -43,10 +48,7 @@ public class SettingPane extends JPanel {
     }
 
     public ModelType getModelType() {
-        if (addTypeBth.isSelected()) {
-            return ModelType.ADD;
-        }
-        return ModelType.MULTI;
+        return modelType;
     }
 
     public Integer getPeriodValue() {
@@ -72,7 +74,7 @@ public class SettingPane extends JPanel {
         }
     }
 
-    public Object getSelectedTred() {
+    public Object getSelectedTrend() {
         return trendBox.getSelectedItem();
     }
 

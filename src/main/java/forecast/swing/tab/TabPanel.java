@@ -124,7 +124,7 @@ public class TabPanel extends JPanel{
 
     private void updateInfoPane() {
         infoPane.add(new JLabel("Перод: " + settingPane.getPeriodValue()));
-        infoPane.add(new JLabel("Модель тренда: " + settingPane.getSelectedTred()));
+        infoPane.add(new JLabel("Модель тренда: " + settingPane.getSelectedTrend()));
         switch (settingPane.getModelType()) {
             case ADD:
                 infoPane.add(new JLabel("Тип тренда: аддетивная"));

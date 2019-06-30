@@ -25,7 +25,6 @@ public class TabPanel extends JPanel{
 
     private JPanel infoPane = new JPanel();
     private SettingPane settingPane;
-    private JCheckBox showCenterMoveLineSeries = new JCheckBox("Отобразить центрировую скользящую средную:", false);
     private TimeSeriesCollection collection = new TimeSeriesCollection();
     private double determination;
     private TimeSeries sma;
@@ -35,8 +34,6 @@ public class TabPanel extends JPanel{
 
     public TabPanel(String title, TimeSeries fileSeries) {
         setLayout(new BorderLayout());
-        showCenterMoveLineSeries.addActionListener(e -> updatePanel(title, fileSeries));
-
         settingPane = new SettingPane(
                 e -> updatePanel(title, fileSeries),
                 e -> saveToFile(),
@@ -161,18 +158,12 @@ public class TabPanel extends JPanel{
             }
             collection.addSeries(sma);
         }
-//        collection.addSeries(moveAgr);
-//        TimeSeries centerMoveAgr = createMoveAgr("Центрированная скользящая средняя", moveAgr);
-//        centerMoveAgr = createMoveAgr("Центрированная скользящая средняя", sma);
         TimeSeries trendSeries = new TimeSeries("Тренд");
         TimeSeries evaluationSC = new TimeSeries("Оценка сезонной компоненты");
         TimeSeries adjustedSC = new TimeSeries("Скорректированная сезонная компонента");
         TimeSeries ts = new TimeSeries("ts");
         error = new TimeSeries("Остатки регрессии");
         forecast = new TimeSeries("Прогноз");
-        if(showCenterMoveLineSeries.isSelected()){
-//            collection.addSeries(centerMoveAgr);
-        }
         for (int i=0; i<fileSeries.getItemCount(); i++){
             RegularTimePeriod timePeriod = fileSeries.getTimePeriod(i);
             if(sma.getValue(timePeriod)!=null){
@@ -194,26 +185,14 @@ public class TabPanel extends JPanel{
                 sum+=pokazateli[i];
             }
             double k = 1;
-            switch (settingPane.getModelType()) {
-                case ADD:
                     k = period / sum;
-                    break;
-                case MULTI:
-                    k = period / sum;
-                    break;
-                default:
-                    // nothing to do
-            }
             for (int i=0; i<pokazateli.length;i++){
-              //  pokazateli[i] = getAResult(pokazateli[i], k);
                 pokazateli[i] = pokazateli[i] * k;
             }
             for (int i=0;i<itemCount;i++){
                 adjustedSC.add(fileSeries.getTimePeriod(i), pokazateli[i%period]);
             }
         }
-//        collection.addSeries(adjustedSC);
-
         TrendLine line = settingPane.getTrendLine();
         double[] x = new double[itemCount];
         double[] y = new double[itemCount];
